@@ -39,14 +39,14 @@ const styles = {
 class MobileNav extends Component {
   render() {
     return(
-      <div id="mobile-nav" style={styles.root}>
+      <nav id="mobile-nav" style={styles.root}>
         <h1 id="title" style={styles.title}>Neighborhood Maps</h1>
         <button 
         id="mobile-sidebar-button" 
         onClick={() => {this.props.menuToggle()}} 
         style={styles.button}
         type="button">Filter</button>
-      </div>
+      </nav>
     )
   }
 }

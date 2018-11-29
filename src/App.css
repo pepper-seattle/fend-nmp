@@ -1,3 +1,7 @@
+li::selection {
+  background-color: #aaf8c4;
+}
+
 .App {
   height: 100%;
   margin: 0;

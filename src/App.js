@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import {getLocations, googleMaps} from './utils';
-import Modal from './components/Modal';
+import {getImages, getLocations, googleMaps} from './utils';
+import ErrorModal from './components/ErrorModal';
 import SideBar from './components/SideBar';
 import MobileNav from './components/MobileNav';
 
@@ -15,19 +15,13 @@ class App extends Component {
     }
   };
 
-  openModal() {
-    this.setState({modalIsOpen: true});
-  }
-
   componentDidMount() {
-    // let getImagesAPI = getImages();
     let googleMapsAPI = googleMaps();
     let getLocationsAPI = getLocations();
 
     Promise.all([
-      // getImagesAPI,
       googleMapsAPI,
-      getLocationsAPI
+      getLocationsAPI,
     ])
       .then(values => {
         console.log(values);
@@ -36,12 +30,14 @@ class App extends Component {
 
         this.google = google;
         this.infoWindow = new google.maps.InfoWindow();
+        this.infoWinContents = [];
         this.markers = [];
         this.map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: this.venues[0].location.lat, lng: this.venues[0].location.lng},
           scrollwheel: true,
           zoom: 15
-      });
+        })
+      
       
 
         this.venues.map(venue => {
@@ -55,6 +51,13 @@ class App extends Component {
             position: {lat: venue.location.lat , lng: venue.location.lng},
           });
 
+          let infoWinContent = '<div id="info-window">' +
+            '<h3 id="marker-name">' + venue.name + '</h3>' +
+            '<p id="marker-address">' + venue.location.formattedAddress[0] + '</p>' +
+            '<p id="marker-address">' + venue.location.formattedAddress[1] + '</p>' +
+            '<img id="marker-image" ' + '" src="' + getImages(venue) + '" alt="' + venue.name + '" />' +
+            '</div>';
+
           marker.addListener('click', () => {
             if(marker.getAnimation() !== null) {
               marker.setAnimation(null);
@@ -65,20 +68,25 @@ class App extends Component {
           });
 
           google.maps.event.addListener(marker, 'click', () => {
-            this.infoWindow.setContent(marker.name);
+            this.infoWindow.setContent(infoWinContent);
             this.map.setZoom(17);
             this.map.setCenter(marker.position);
             this.infoWindow.open(this.map, marker);
             this.map.panBy(0, -125);
           });
           this.markers.push(marker);
+          this.infoWinContents.push({ id: venue.id, name: venue.name, contents: infoWinContent});
         });
         this.setState({venues: this.venues});
+      })
+      .catch(function(error) {
+        this.setState({ modalIsOpen: true });
+        return error;
       });
   }
 
   filterMarkers = (query) => {
-    let filteredMarkers = this.venues.filter(venue => venue.name.toLowerCase().includes(query.toLowerCase()));
+    let filteredMarkers = query ? this.venues.filter(venue => venue.name.toLowerCase().includes(query.toLowerCase())) : this.venues;
     this.markers.map(marker => {
       marker.name.toLowerCase().includes(query.toLowerCase()) == true ? marker.setVisible(true) : marker.setVisible(false)
     })
@@ -87,8 +95,10 @@ class App extends Component {
 
   venueClick = (venue) => {
     let marker = this.markers.filter(marker => marker.id === venue.id)[0];
+    let infoContent = this.infoWinContents.filter(infoWinContent => infoWinContent.id === marker.id)[0]; 
+    let infoWinContent = infoContent.contents;
     this.infoWindow.open(this.map, marker);
-    this.infoWindow.setContent(marker.name);
+    this.infoWindow.setContent(infoWinContent);
     this.map.setZoom(17);
     this.map.setCenter(marker.position);
     if(marker.getAnimation() !== null) {
@@ -113,8 +123,8 @@ class App extends Component {
     return (
       <div className="App">
         <MobileNav menuToggle={this.menuToggle} />
-        <Modal
-          modalIsOpen={false}
+        <ErrorModal
+          isOpen={this.state.modalIsOpen}
           onRequestClose={this.closeModal}
           contentLabel="An Error Has Occurred!" 
           />
@@ -124,7 +134,7 @@ class App extends Component {
           venues={this.state.venues}
         />
         <main>
-          <div id="map"></div>
+          <div aria-hidden="true" id="map" role="application"></div>
         </main>
       </div>
     );

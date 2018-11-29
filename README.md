@@ -13,6 +13,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 Location information/maps are pulled from the [Google Maps API](https://developers.google.com/maps/documentation/) and the [Foursquare API](https://developer.foursquare.com/).
 Location images are pulled from the [Google Street View API](https://developers.google.com/maps/documentation/streetview/intro).
 
+You will need to install Node and NPM to get going.
+
 ## Available Scripts
 
 In the project directory, you can run:
