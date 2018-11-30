@@ -26,18 +26,7 @@ export function getLocations() {
 }
 
 export function getImages(venue) {
-  return new Promise(function(resolve, reject) {
-    window.resolveGoogleStreetViewPromise = function() {
-      resolve(window.google);
-      delete this.window.resolveGoogleStreetViewPromise;
-    }
-    const script = document.createElement("script");
     const API_key = 'AIzaSyDqrfGNgjKre3b3yV0ClFxQuFhGMEZVLZs';
-    const secret = 'o1SckMlDyNv-sAQKau3CSyb4dKU=';
-    const location = venue.location.lat + ',' + venue.location.lng;
-    script.src = `https://maps.googleapis.com/maps/api/streetview?size=150x150&location=${location}&heading=151.78&pitch=-0.76&key=${API_key}&signature=${secret}&callback=resolveGoogleStreetViewPromise`;
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-  });
+    const { lat, lng } = venue.location;
+    return `https://maps.googleapis.com/maps/api/streetview?size=150x150&location=${lat},${lng}&heading=151.78&pitch=-0.76&key=${API_key}`;
 }

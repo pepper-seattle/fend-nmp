@@ -39,7 +39,7 @@ class App extends Component {
       
       
 
-        this.venues.map(venue => {
+        this.venues.forEach(venue => {
           let marker = new google.maps.Marker({
             animation: google.maps.Animation.DROP,
             icon: {url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"},
@@ -54,7 +54,7 @@ class App extends Component {
             '<h3 id="marker-name">' + venue.name + '</h3>' +
             '<p id="marker-address">' + venue.location.formattedAddress[0] + '</p>' +
             '<p id="marker-address">' + venue.location.formattedAddress[1] + '</p>' +
-            '<img id="marker-image" ' + '" src="' + getImages(venue) + '" alt="' + venue.name + '" />' +
+            '<img id="marker-image" src="' + getImages(venue) + '" alt="' + venue.name + '" />' +
             '</div>';
 
           marker.addListener('click', () => {
@@ -78,16 +78,13 @@ class App extends Component {
         });
         this.setState({venues: this.venues});
       })
-      .catch(error => {
-        this.setState({ modalIsOpen: true });
-        return error;
-      });
+      .catch(() => this.setState({ modalIsOpen: true }));
   }
 
   filterMarkers = (query) => {
     let filteredMarkers = query ? this.venues.filter(venue => venue.name.toLowerCase().includes(query.toLowerCase())) : this.venues;
-    this.markers.map(marker => {
-      marker.name.toLowerCase().includes(query.toLowerCase()) == true ? marker.setVisible(true) : marker.setVisible(false)
+    this.markers.forEach(marker => {
+      marker.name.toLowerCase().includes(query.toLowerCase()) ? marker.setVisible(true) : marker.setVisible(false)
     })
     this.setState({venues: filteredMarkers, query});
   }
