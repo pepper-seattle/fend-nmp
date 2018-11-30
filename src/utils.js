@@ -9,10 +9,13 @@ export function googleMaps() {
     }
     // load google map API with necessary script
     const script = document.createElement("script");
-    const API_key = 'AIzaSyDqrfGNgjKre3b3yV0ClFxQuFhGMEZVLZs';
+    const API_key = 'AIzaSyDqrfGNgjKre3b3yV0ClFxQuFhGMEZVLZs-d';
     script.src = `https://maps.googleapis.com/maps/api/js?libraries=places&key=${API_key}&callback=resolveGoogleMapsPromise`;
     script.async = true;
     script.defer = true;
+    script.onerror = function(msg, error, url) {
+      console.log(msg, error, url);
+    }
     document.body.appendChild(script);
   });
 }
