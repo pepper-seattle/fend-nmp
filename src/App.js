@@ -24,7 +24,6 @@ class App extends Component {
       getLocationsAPI,
     ])
       .then(values => {
-        console.log(values);
         let google = values[0];
         this.venues = values[1].response.venues;
 
@@ -79,7 +78,7 @@ class App extends Component {
         });
         this.setState({venues: this.venues});
       })
-      .catch(function(error) {
+      .catch(error => {
         this.setState({ modalIsOpen: true });
         return error;
       });
