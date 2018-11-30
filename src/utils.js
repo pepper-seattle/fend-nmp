@@ -1,3 +1,7 @@
+function errorAlert() {
+  alert('stuff');
+}
+
 export function googleMaps() {
   return new Promise(function(resolve) {
     // callback that runs when map loads
@@ -13,9 +17,7 @@ export function googleMaps() {
     script.src = `https://maps.googleapis.com/maps/api/js?libraries=places&key=${API_key}&callback=resolveGoogleMapsPromise`;
     script.async = true;
     script.defer = true;
-    script.onerror = function(msg, error, url) {
-      console.log(msg, error, url);
-    }
+    script.onerror = errorAlert;
     document.body.appendChild(script);
   });
 }
@@ -33,3 +35,4 @@ export function getImages(venue) {
     const { lat, lng } = venue.location;
     return `https://maps.googleapis.com/maps/api/streetview?size=150x150&location=${lat},${lng}&heading=151.78&pitch=-0.76&key=${API_key}`;
 }
+
