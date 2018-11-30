@@ -1,5 +1,5 @@
 function errorAlert() {
-  alert('stuff');
+  alert('Google Maps could not be returned. Please refresh or try again later.');
 }
 
 export function googleMaps() {
